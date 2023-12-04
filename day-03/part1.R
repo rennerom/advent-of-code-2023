@@ -38,7 +38,9 @@ make_row_tibble <- function(main_row, compare_row_one, compare_row_two) {
   # 10,11,12 |   334
 
   for (i in nums) {
-    res <- str_locate_all(main_row, as.character(i))[[1]] |>
+    num <- as.character(i)
+    num <- str_glue("(?<!\\d){num}(?!\\d)") # fixes the issue of matching 123 when looking for 12
+    res <- str_locate_all(main_row, num)[[1]] |>
       as_tibble() |>
       mutate(val = i)
     temp_tibble <- bind_rows(temp_tibble, res)
