@@ -5,27 +5,17 @@ data <- read_delim(here::here("day-03","input.txt"), delim = " ", col_names = FA
 
 data
 
-find_gears <- function(x) {
-  str_locate_all(x, "\\*")[[1]][,1]
+find_inline_gears_total <- function(x) {
+  str_extract_all(x, "\\d+\\*\\d+")[[1]] |>
+    map(~str_split(.x, "\\*")[[1]] |> map_int(~as.numeric(.x)) |> prod()) |>
+    map_int(~.x) |> sum() -> result
+  return(result)
 }
 
-find_nums <- function(x) {
-  nums <- str_replace_all(x, "[^0-9]", " ") |>
-    str_trim() |>
-    str_split(" +") |>
-    unlist() |>
-    map_int(~as.numeric(.x))
-  return(nums)
-}
-temp_tibble <- tibble()
-for (i in nums) {
-  num <- as.character(i)
-  num <- str_glue("(?<!\\d){num}(?!\\d)") # fixes the issue of matching 123 when looking for 12
-  res <- str_locate_all(data$code[4], num)[[1]] |>
-    as_tibble() |>
-    mutate(val = i)
-  temp_tibble <- bind_rows(temp_tibble, res)
-}
-temp_tibble
-find_gears(data$code[4])
-find_nums(data$code[4])
+# compare two lines
+one <- data$code[1]
+two <- data$code[2]
+
+one |> str_replace("[^\\D*]", ".")
+two |> str_replace("[^\\D*]", ".")
+
